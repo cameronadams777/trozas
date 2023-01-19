@@ -1,13 +1,15 @@
-import './App.css'
-import { AuthProvider } from './state/AuthContext'
+import { AuthProvider } from 'src/state/AuthContext'
+import { MainLayout } from 'src/layouts/MainLayout';
+import { AuthTokenForm } from './components/AuthTokenForm';
 
 function App() { 
   return (
     <AuthProvider> 
-      <div>
-      </div>
+      <MainLayout>
+        <AuthTokenForm />
+      </MainLayout>
     </AuthProvider>
   );
 }
 
-export default App
+export default App;

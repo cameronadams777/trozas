@@ -15,7 +15,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: FunctionComponent<AuthProviderProps> = ({ children }) => {
-  const [apiToken, setAPIToken] = useState('');
+  const [apiToken, setAPIToken] = useState(localStorage.getItem("token") || '');
 
   return (
     <AuthContext.Provider value={{ apiToken, setAPIToken }}>

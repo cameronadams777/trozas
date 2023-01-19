@@ -1,7 +1,17 @@
-import type { FunctionComponent } from "react";
+import { Fragment, FunctionComponent, ReactNode } from "react";
+import { NavBar } from "src/components/NavBar";
 
-export const MainLayout: FunctionComponent = () => {
+interface MainLayoutProps {
+  children: ReactNode;
+}
+
+export const MainLayout: FunctionComponent<MainLayoutProps> = ({ children }) => {
   return (
-    <div></div>
+    <Fragment>
+      <NavBar />
+      <div>
+        { children }
+      </div>
+    </Fragment>
   ); 
 }
