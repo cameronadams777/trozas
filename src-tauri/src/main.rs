@@ -55,9 +55,9 @@ async fn main() {
         .expect("error while running tauri application");
 }
 
-#[tauri::command]
-async fn save_connection_details(instance_url: &str, api_token: &str) -> bool {
+// #[tauri::command]
+//async fn save_connection_details(instance_url: &str, api_token: &str) -> bool {
     // Attempt to make api call to instance url using api_token
     // If successful, save details in config.json and return true
     // Else, return false
-}
+//}
