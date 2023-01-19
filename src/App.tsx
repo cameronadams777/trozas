@@ -1,14 +1,11 @@
-import { AuthProvider } from 'src/state/AuthContext'
 import { MainLayout } from 'src/layouts/MainLayout';
-import { AuthTokenForm } from './components/AuthTokenForm';
+import { SetupForm } from 'src/components/SetupForm';
 
 function App() { 
   return (
-    <AuthProvider> 
-      <MainLayout>
-        <AuthTokenForm />
-      </MainLayout>
-    </AuthProvider>
+    <MainLayout>
+      <SetupForm />
+    </MainLayout>
   );
 }
 
