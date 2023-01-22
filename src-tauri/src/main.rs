@@ -44,7 +44,7 @@ fn get_or_build_config_dir() -> String {
 
     let config_path = format!("{}{}", home_path, app_config_directory_name);
 
-    let config_file_path = format!("{}{}", config_path, CONFIG_FILE_NAME);
+    let config_file_path = format!("{}/{}", config_path, CONFIG_FILE_NAME);
 
     if !Path::new(&config_path).is_dir() {
         fs::create_dir(config_path).unwrap();
