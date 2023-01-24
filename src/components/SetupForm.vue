@@ -19,7 +19,9 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { invoke } from '@tauri-apps/api';
+import { useConnectionDetailsStore } from 'src/state/connection';
+
+const { saveConnectionDetails } = useConnectionDetailsStore();
 
 const form = reactive({
   instanceUrl: '',
@@ -28,8 +30,7 @@ const form = reactive({
 
 async function submitInstanceDetails () {
   try {
-    const connectionDetails = await invoke("save_connection_details", form);
-    console.log(connectionDetails);
+    await saveConnectionDetails(form);
   } catch(error) {
     console.log(error)
     // TODO: Add toast messaging if submit fails

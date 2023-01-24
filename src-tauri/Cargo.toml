@@ -25,11 +25,12 @@ url = "2.3.1"
 futures-util = "0.3.25"
 futures-channel = "0.3.25"
 reqwest = { version = "0.11.14", features = ["json"] }
+sha2 = "0.10.6"
 
 [features]
 # by default Tauri runs in production mode
 # when `tauri dev` runs it is executed with `cargo run --no-default-features` if `devPath` is an URL
-default = [ "custom-protocol" ]
+default = ["custom-protocol"]
 # this feature is used for production builds where `devPath` points to the filesystem
 # DO NOT remove this
-custom-protocol = [ "tauri/custom-protocol" ]
+custom-protocol = ["tauri/custom-protocol"]

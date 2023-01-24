@@ -93,6 +93,7 @@ async fn main() {
             Ok(())
         })*/
         .invoke_handler(tauri::generate_handler![
+            get_connection_details,
             save_connection_details,
         ])
         .run(tauri::generate_context!())
@@ -110,19 +111,28 @@ fn save_config<'a>(key: &'a str, value: String) {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct AppConfig<'a> {
-    #[serde(borrow)]
-    connection_details: ConnectionDetails<'a>,
+struct AppConfig {
+    connection_details: ConnectionDetails,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct ConnectionDetails<'a> {
-    instance_url: &'a str,
-    api_token: &'a str,
+struct ConnectionDetails {
+    instance_url: String,
+    api_token: String,
 }
 
 #[tauri::command]
-async fn save_connection_details<'a>(instance_url: &'a str, api_token: &'a str) -> Result<ConnectionDetails<'a>, &'a str> {
+fn get_connection_details() -> Result<ConnectionDetails, ConnectionDetails> {
+    let config_file_path = get_or_build_config_dir();
+    let config_as_string = fs::read_to_string(&config_file_path).unwrap();
+    match serde_json::from_str::<AppConfig>(&config_as_string.as_str()) {
+       Ok(config) => Ok(config.connection_details),
+       Err(_) => Ok(ConnectionDetails { instance_url: "".to_string(), api_token: "".to_string() })
+    }
+}
+
+#[tauri::command]
+async fn save_connection_details(instance_url: String, api_token: String) -> Result<ConnectionDetails, String> {
     let client = reqwest::Client::new();
     // Attempt to make api call to instance url using api_token
     let resp = client.get(format!("{}/v3/users?me=true", instance_url))
@@ -133,17 +143,17 @@ async fn save_connection_details<'a>(instance_url: &'a str, api_token: &'a str) 
     match resp {
         Ok(_) => {
             let connection_details = ConnectionDetails {
-                instance_url: &instance_url,
-                api_token: &api_token,
+                instance_url: instance_url,
+                api_token: api_token,
             };
             match serde_json::to_string(&connection_details) {
                 Ok(serialized_connection_details) => {
                     save_config("connection_details", serialized_connection_details); 
                     Ok(connection_details)
                 },
-                Err(_) => Err("Error: Could not serialize connection details.")
+                Err(_) => Err("Error: Could not serialize connection details.".to_string())
             }
         },
-        Err(_) => Err("Error: Invalid connection details."),
+        Err(_) => Err("Error: Invalid connection details.".to_string()),
     }
 }
