@@ -19,11 +19,11 @@
 
 <script setup lang="ts">
 import { reactive } from "vue";
+import { useRouter } from "vue-router";
 import { saveConnectionDetails } from "src/lib/trovas";
 import { useRancherClient } from "src/plugins/rancher-client";
 
-const emit = defineEmits<{ onComplete: () => void; }>();
-
+const router = useRouter();
 const rancherClient = useRancherClient();
 
 const form = reactive({
@@ -34,8 +34,8 @@ const form = reactive({
 async function submitInstanceDetails () {
   try {
     const connectionDetails = await saveConnectionDetails(form);
-    rancherClient?.setConnectionDetails(connectionDetails);
-    emit.onComplete();
+    rancherClient.setConnectionDetails(connectionDetails);
+    router.push("/home");
   } catch(error) {
     console.log(error)
     // TODO: Add toast messaging if submit fails

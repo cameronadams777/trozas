@@ -1,7 +1,4 @@
-import { RancherClient } from "src/lib/rancher-client";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import { useRancherClient } from "src/plugins/rancher-client";
-
 const authenticatedRoutes = ["/home"];
 
 const routes: RouteRecordRaw[] = [
@@ -14,11 +11,6 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to) => {
-  const rancherClient = useRancherClient();
-  if(authenticatedRoutes.includes(to.path) && !rancherClient.hasConnectionDetails()) {
-    return "/";
-  }
-})
+// TODO: Add logic for redirects depending on connectionDetail availablility
 
 export default router;

@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <SetupForm @on-complete="$router.push('/home')" />
+    <SetupForm />
   </MainLayout>
 </template>
 

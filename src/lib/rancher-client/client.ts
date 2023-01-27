@@ -16,7 +16,7 @@ export class RancherClient {
   public getClusters(): Promise<any> {
     this.assertHasConnectionDetails();
     return httpClient.get({
-      url: `${this.connectionDetails.instanceUrl}`,
+      url: `${this.connectionDetails.instanceUrl}/v3/cluster`,
       options: {
         headers: this.buildHeaders(),
       }
