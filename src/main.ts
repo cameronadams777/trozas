@@ -1,19 +1,23 @@
-import { invoke } from '@tauri-apps/api';
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import { RancherClient } from './lib/rancher-client';
-import App from './App.vue';
-import 'uno.css';
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import { RancherClientPlugin } from "src/plugins/rancher-client";
+import { RancherClient } from "src/lib/rancher-client";
+import { getConnectionDetails } from "src/lib/trovas";
+import router from "src/router";
+import App from "./App.vue";
+import "uno.css";
 
-const connectionDetails = await invoke<IConnectionDetails>("get_connection_details");
-RancherClient.initialize(connectionDetails);
+const connectionDetails = await getConnectionDetails(); 
+const rancherClient = new RancherClient(connectionDetails);
 
 const app = createApp(App);
 const pinia = createPinia();
 
 // Apply Vue plugins
+app.use(RancherClientPlugin, { client: rancherClient });
 app.use(pinia);
+app.use(router);
 
 // Mount app
-app.mount('#app')
+app.mount("#app")
 

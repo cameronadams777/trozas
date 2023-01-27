@@ -1,40 +1,43 @@
 import * as httpClient from "src/lib/http-client";
 import { IConnectionDetails } from "src/types";
 
-interface IRancherClientInitializeOptions {
-  connectionDetails: IConnectionDetails | undefined;
-}
+// TODO: Need to type all requests
+export class RancherClient {
+  private connectionDetails: IConnectionDetails;
 
-interface ISetConnectionDetailsOptions {
-  connectionDetails: IConnectionDetails | undefined;
-}
-
-interface IRancherClient {
-  connectionDetails: IConnectionDetails | undefined;
-  initialize: (args: IRancherClientInitializeOptions) => void;
-  setConnectionDetails: (args: ISetConnectionDetailsOptions) => void;
-  getClusters: () => Promise<any>;
-}
-
-// TODO: Need to create types for these functions. All request functions
-// should have their response schema validated using zod.
-export const RancherClient: IRancherClient = {
-  connectionDetails: undefined,
-  initialize({ connectionDetails }) {
+  constructor(connectionDetails: IConnectionDetails) {
     this.connectionDetails = connectionDetails;
-  },
-  setConnectionDetails({ connectionDetails }) {
+  }
+  
+  public setConnectionDetails(connectionDetails: IConnectionDetails): void {
     this.connectionDetails = connectionDetails;
-  },
-  async getClusters()  {
-    if(this.connectionDetails == null) return; // TODO: Add better handling here. Should check for connection details, throw error but preserve types if connection details exists.
+  }
+
+  public getClusters(): Promise<any> {
+    this.assertHasConnectionDetails();
     return httpClient.get({
-      url: `${this.connectionDetails?.instanceUrl}/v3/cluster`,
+      url: `${this.connectionDetails.instanceUrl}`,
       options: {
-        headers: {
-          Authorization: `Basic ${this.connectionDetails.apiToken}`
-        }
+        headers: this.buildHeaders(),
       }
-    }); 
+    });
+  }
+
+  public hasConnectionDetails(): boolean {
+    return Object.values(this.connectionDetails).every((value: string) => value.length > 0); 
+  }
+
+
+  /* PRIVATE */
+
+  private buildHeaders(headers = {}): Record<string, any> {
+    return {
+      ...headers,
+      Authorization: `Basic ${this.connectionDetails.apiToken}`
+    };
+  }
+
+  private assertHasConnectionDetails(): void {
+     if(!this.hasConnectionDetails()) throw new Error("Rancher Client: Invalid connection details");  
   }
 }

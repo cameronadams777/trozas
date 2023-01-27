@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 #![cfg_attr(
   all(not(debug_assertions), target_os = "windows"),
   windows_subsystem = "windows"
@@ -15,7 +16,6 @@ use std::{
 };
 
 const CONFIG_FILE_NAME: &str = "config.json";
-const RANCHER_LOGS_URL: &str = "wss://rancher.mrcooper.io/k8s/clusters/c-kn68m/api/v1/namespaces/dev/pods/gke-apollo-mrc-helpcenter-web-dev-9bcf89678-hqf6c/log?previous=false&follow=true&timestamps=true&pretty=true&container=apollo-mrc-help-center&sinceSeconds=43200&sockId=8";
 
 fn get_or_build_config_dir() -> String {
     let home_path = home::home_dir()
@@ -117,8 +117,8 @@ struct AppConfig {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct ConnectionDetails {
-    instance_url: String,
-    api_token: String,
+    instanceUrl: String,
+    apiToken: String,
 }
 
 #[tauri::command]
@@ -127,7 +127,7 @@ fn get_connection_details() -> Result<ConnectionDetails, ConnectionDetails> {
     let config_as_string = fs::read_to_string(&config_file_path).unwrap();
     match serde_json::from_str::<AppConfig>(&config_as_string.as_str()) {
        Ok(config) => Ok(config.connection_details),
-       Err(_) => Ok(ConnectionDetails { instance_url: "".to_string(), api_token: "".to_string() })
+       Err(_) => Ok(ConnectionDetails { instanceUrl: "".to_string(), apiToken: "".to_string() })
     }
 }
 
@@ -143,8 +143,8 @@ async fn save_connection_details(instance_url: String, api_token: String) -> Res
     match resp {
         Ok(_) => {
             let connection_details = ConnectionDetails {
-                instance_url: instance_url,
-                api_token: api_token,
+                instanceUrl: instance_url,
+                apiToken: api_token,
             };
             match serde_json::to_string(&connection_details) {
                 Ok(serialized_connection_details) => {
