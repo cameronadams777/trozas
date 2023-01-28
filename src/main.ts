@@ -7,7 +7,7 @@ import router from "src/router";
 import App from "./App.vue";
 import "uno.css";
 
-const connectionDetails = await getConnectionDetails(); 
+const connectionDetails = await getConnectionDetails();
 const rancherClient = new RancherClient(connectionDetails);
 
 const app = createApp(App);

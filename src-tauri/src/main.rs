@@ -104,8 +104,7 @@ async fn main() {
 fn save_config<'a>(key: &'a str, value: String) {
     let config_file_path = get_or_build_config_dir();
     let config_as_string = fs::read_to_string(&config_file_path).unwrap();
-    let mut config: HashMap<&str, String> = serde_json::from_str(&config_as_string.as_str()).unwrap();
-
+    let mut config = serde_json::from_str::<HashMap<&str, String>>(&config_as_string.as_str()).unwrap();
     config.insert(key, value);
     let _ = fs::write(&config_file_path, serde_json::to_string_pretty(&config).unwrap());
 }
@@ -125,10 +124,18 @@ struct ConnectionDetails {
 fn get_connection_details() -> Result<ConnectionDetails, ConnectionDetails> {
     let config_file_path = get_or_build_config_dir();
     let config_as_string = fs::read_to_string(&config_file_path).unwrap();
-    match serde_json::from_str::<AppConfig>(&config_as_string.as_str()) {
-       Ok(config) => Ok(config.connection_details),
-       Err(_) => Ok(ConnectionDetails { instanceUrl: "".to_string(), apiToken: "".to_string() })
-    }
+    let config = serde_json::from_str::<HashMap<&str, String>>(&config_as_string.as_str()).unwrap();
+    let empty_connection_details = ConnectionDetails { instanceUrl: "".to_string(), apiToken: "".to_string() };
+    let connection_details = match config.get("connection_details") {
+        Some(res) => {
+            match serde_json::from_str::<ConnectionDetails>(res) {
+                Ok(deserialized_config) => Ok(deserialized_config),
+                Err(_) => Err(empty_connection_details),
+            }
+        },
+        None => Ok(empty_connection_details),
+    };
+    return connection_details;
 }
 
 #[tauri::command]
