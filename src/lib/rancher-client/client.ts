@@ -23,6 +23,26 @@ export class RancherClient {
     });
   }
 
+  public getDeployments(clusterId: string): Promise<any> {
+    this.assertHasConnectionDetails();
+    return httpClient.get({
+      url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/v1/apps.deployments`,
+      options: {
+        headers: this.buildHeaders(),
+      }
+    });
+  }
+
+  public getPods(clusterId: string): Promise<any> {
+    this.assertHasConnectionDetails();
+    return httpClient.get({
+      url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/v1/pods`,
+      options: {
+        headers: this.buildHeaders(),
+      }
+    });
+  }
+
   public hasConnectionDetails(): boolean {
     return Object.values(this.connectionDetails).every((value: string) => value.length > 0); 
   }

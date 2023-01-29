@@ -1,9 +1,13 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-const authenticatedRoutes = ["/home"];
+
+//const authenticatedRoutes = ["/home"];
 
 const routes: RouteRecordRaw[] = [
-  { path: "/", component: () => import("../pages/Setup.vue") },
-  { path: "/home", component: () => import("../pages/Home.vue") }
+  { path: "/", component: () => import("src/pages/Setup.vue") },
+  { path: "/home", component: () => import("src/pages/Home.vue") },
+  { path: "/clusters/:clusterId/deployments/:deploymentId", component: () => import("src/pages/DeploymentDetails.vue") },
+  { path: "/clusters/:clusterId", component: () => import("src/pages/ClusterDetails.vue") },
+  { path: "/500", component: () => import("src/pages/500.vue") }
 ];
 
 const router = createRouter({
