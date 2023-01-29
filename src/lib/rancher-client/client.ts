@@ -1,3 +1,4 @@
+import { ResponseType } from "@tauri-apps/api/http";
 import * as httpClient from "src/lib/http-client";
 import { IConnectionDetails } from "src/types";
 
@@ -38,6 +39,17 @@ export class RancherClient {
     return httpClient.get({
       url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/v1/pods`,
       options: {
+        headers: this.buildHeaders(),
+      }
+    });
+  }
+
+  public getLogs(clusterId: string, podId: string): Promise<any> {
+    this.assertHasConnectionDetails();
+    return httpClient.get({
+      url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/api/v1/namespaces/dev/pods/${podId}/log?previous=false&timestamps=true&pretty=true&sinceSeconds=43200`,
+      options: {
+        responseType: ResponseType.Text,
         headers: this.buildHeaders(),
       }
     });
