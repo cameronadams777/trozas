@@ -4,6 +4,7 @@
   windows_subsystem = "windows"
 )]
 
+use radix64::STD;
 use serde::{Serialize, Deserialize};
 //use futures_util::StreamExt;
 //use tokio_tungstenite::connect_async;
@@ -151,7 +152,7 @@ async fn save_connection_details(instance_url: String, api_token: String) -> Res
         Ok(_) => {
             let connection_details = ConnectionDetails {
                 instanceUrl: instance_url,
-                apiToken: api_token,
+                apiToken: STD.encode(&api_token),
             };
             match serde_json::to_string(&connection_details) {
                 Ok(serialized_connection_details) => {
