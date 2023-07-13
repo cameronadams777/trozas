@@ -9,7 +9,7 @@ export class RancherClient {
   constructor(connectionDetails: IConnectionDetails) {
     this.connectionDetails = connectionDetails;
   }
-  
+
   public setConnectionDetails(connectionDetails: IConnectionDetails): void {
     this.connectionDetails = connectionDetails;
   }
@@ -20,7 +20,7 @@ export class RancherClient {
       url: `${this.connectionDetails.instanceUrl}/v3/cluster`,
       options: {
         headers: this.buildHeaders(),
-      }
+      },
     });
   }
 
@@ -30,7 +30,7 @@ export class RancherClient {
       url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/v1/apps.deployments`,
       options: {
         headers: this.buildHeaders(),
-      }
+      },
     });
   }
 
@@ -40,7 +40,7 @@ export class RancherClient {
       url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/v1/pods`,
       options: {
         headers: this.buildHeaders(),
-      }
+      },
     });
   }
 
@@ -51,25 +51,27 @@ export class RancherClient {
       options: {
         responseType: ResponseType.Text,
         headers: this.buildHeaders(),
-      }
+      },
     });
   }
 
   public hasConnectionDetails(): boolean {
-    return Object.values(this.connectionDetails).every((value: string) => value.length > 0); 
+    return Object.values(this.connectionDetails).every(
+      (value: string) => value.length > 0
+    );
   }
-
 
   /* PRIVATE */
 
   private buildHeaders(headers = {}): Record<string, any> {
     return {
       ...headers,
-      Authorization: `Basic ${this.connectionDetails.apiToken}`
+      Authorization: `Basic ${this.connectionDetails.apiToken}`,
     };
   }
 
   private assertHasConnectionDetails(): void {
-     if(!this.hasConnectionDetails()) throw new Error("Rancher Client: Invalid connection details");  
+    if (!this.hasConnectionDetails())
+      throw new Error("Rancher Client: Invalid connection details");
   }
 }
