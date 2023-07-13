@@ -5,7 +5,8 @@ import { RancherClient } from "src/lib/rancher-client";
 import { getConnectionDetails } from "src/lib/trovas";
 import router from "src/router";
 import App from "./App.vue";
-import "uno.css";
+import "@unocss/reset/normalize.css";
+import "virtual:uno.css";
 
 const connectionDetails = await getConnectionDetails();
 const rancherClient = new RancherClient(connectionDetails);
@@ -19,5 +20,4 @@ app.use(pinia);
 app.use(router);
 
 // Mount app
-app.mount("#app")
-
+app.mount("#app");
