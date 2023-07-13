@@ -39,8 +39,8 @@ fn get_or_build_config_dir() -> String {
 
     // Handle app directory
     let app_config_directory_name = match env::consts::OS {
-        "windows" => "\\.config\\log-viewer",
-        _ => "/.config/log-viewer"
+        "windows" => "\\.config\\trozas",
+        _ => "/.config/trozas"
     };
 
     let config_path = format!("{}{}", home_path, app_config_directory_name);

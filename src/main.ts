@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { RancherClientPlugin } from "src/plugins/rancher-client";
 import { RancherClient } from "src/lib/rancher-client";
-import { getConnectionDetails } from "src/lib/trovas";
+import { getConnectionDetails } from "src/lib/trozas";
 import router from "src/router";
 import App from "./App.vue";
 import "@unocss/reset/normalize.css";

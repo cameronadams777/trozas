@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import { getConnectionDetails } from "src/lib/trovas";
+import { getConnectionDetails } from "src/lib/trozas";
 
 const routes: RouteRecordRaw[] = [
   { path: "/", name: "Setup", component: () => import("src/pages/Setup.vue") },

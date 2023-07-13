@@ -1,14 +1,14 @@
 <template>
   <div class="w-full h-full flex flex-col justify-center items-center">
     <div class="flex flex-col mb-4">
-      <label for="instanceUrl" class="font-bold">Instance URL</label>
+      <label for="instanceUrl" class="mb-2 font-bold">Instance URL</label>
       <input v-model="form.instanceUrl" type="text" />
     </div>
     <div class="flex flex-col mb-4">
-      <label for="apiToken" class="font-bold">API Token</label>
+      <label for="apiToken" class="mb-2 font-bold">API Token</label>
       <input v-model="form.apiToken" type="text" />
     </div>
-    <button 
+    <button
       class="px-8 py-2 bg-blue-500 hover:bg-blue-700 rounded-md border-none text-white cursor-pointer"
       @click="submitInstanceDetails"
     >
@@ -20,24 +20,24 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
-import { saveConnectionDetails } from "src/lib/trovas";
+import { saveConnectionDetails } from "src/lib/trozas";
 import { useRancherClient } from "src/plugins/rancher-client";
 
 const router = useRouter();
 const rancherClient = useRancherClient();
 
 const form = reactive({
-  instanceUrl: '',
-  apiToken: '',
+  instanceUrl: "",
+  apiToken: "",
 });
 
-async function submitInstanceDetails () {
+async function submitInstanceDetails() {
   try {
     const connectionDetails = await saveConnectionDetails(form);
     rancherClient.setConnectionDetails(connectionDetails);
     router.push("/home");
-  } catch(error) {
-    console.log(error)
+  } catch (error) {
+    console.log(error);
     // TODO: Add toast messaging if submit fails
   }
 }
