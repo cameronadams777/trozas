@@ -1,8 +1,15 @@
 <template>
   <MainLayout :loading="isLoading">
+    <input
+      id="filter"
+      name="filter"
+      placeholder="Filter:"
+      class="p-3 w-full text-lg"
+      @input="(ev) => (filter = (ev.target as HTMLInputElement).value)"
+    />
     <div class="border border-gray-300 rounded-lg">
       <button
-        v-for="cluster of clusters"
+        v-for="cluster of filteredClusters"
         class="w-full flex justify-between items-center m-0 p-3 bg-white hover:bg-gray-900 hover:text-white text-left border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
         @click="$router.push(`/clusters/${cluster.id}`)"
       >
@@ -27,16 +34,21 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useRancherClient } from "src/plugins/rancher-client";
 import MainLayout from "src/layouts/MainLayout.vue";
 
 const isLoading = ref(true);
+const filter = ref<string>("");
 const clusters = ref<any[]>([]);
 
 const router = useRouter();
 const rancherClient = useRancherClient();
+
+const filteredClusters = computed<any[]>(() =>
+  clusters.value.filter((val) => val.name.includes(filter.value))
+);
 
 onMounted(async () => {
   try {

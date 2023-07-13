@@ -1,7 +1,14 @@
 <template>
   <MainLayout :loading="isLoading">
+    <input
+      id="filter"
+      name="filter"
+      placeholder="Filter:"
+      class="p-3 w-full text-lg"
+      @input="(ev) => (filter = (ev.target as HTMLInputElement).value)"
+    />
     <button
-      v-for="deployment of deployments"
+      v-for="deployment of filteredDeployments"
       class="w-full flex justify-between items-center m-0 p-3 bg-white hover:bg-gray-900 hover:text-white text-left border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
       @click="
         $router.push(
@@ -32,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import MainLayout from "src/layouts/MainLayout.vue";
 import { useRancherClient } from "src/plugins/rancher-client";
@@ -40,8 +47,15 @@ import { useRancherClient } from "src/plugins/rancher-client";
 const { params } = useRoute();
 const rancherClient = useRancherClient();
 
+const filter = ref<string>("");
 const isLoading = ref<boolean>(true);
 const deployments = ref<any[]>([]);
+
+const filteredDeployments = computed<any[]>(() =>
+  deployments.value.filter((deployment) =>
+    deployment.metadata.name.includes(filter.value)
+  )
+);
 
 onMounted(async () => {
   try {

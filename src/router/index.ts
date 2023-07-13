@@ -32,7 +32,6 @@ router.beforeEach(async (to, from) => {
   const hasConnectionDetails = Object.values(connectionDetails).every(
     (val) => val.length > 0
   );
-  console.log(hasConnectionDetails);
   if (to.path !== "/" && !hasConnectionDetails) return { name: "Setup" };
   if (to.path === "/" && hasConnectionDetails) return { name: "Home" };
 });
