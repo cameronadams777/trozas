@@ -10,11 +10,7 @@ export const useThemeStore = defineStore({
   id: "themes_store",
   state(): IThemeState {
     return {
-      theme:
-        localStorage.getItem("theme") ??
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light",
+      theme: (localStorage.getItem("theme") as Theme) || "dark",
     };
   },
   actions: {

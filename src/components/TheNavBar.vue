@@ -30,7 +30,7 @@
       class="m-0 p-0 bg-transparent text-current hover:text-blue-500 border-none transition-colors duration-200 cursor-pointer"
     >
       <svg
-        v-if="theme === 'dark'"
+        v-if="theme === 'light'"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
@@ -75,6 +75,8 @@
 import { storeToRefs } from "pinia";
 import { useThemeStore } from "src/state/theme";
 
-const { toggleTheme, ...themeStore } = useThemeStore();
+const themeStore = useThemeStore();
 const { theme } = storeToRefs(themeStore);
+const { toggleTheme } = themeStore;
+console.log(theme);
 </script>

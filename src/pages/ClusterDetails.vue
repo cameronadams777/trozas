@@ -10,7 +10,7 @@
       />
       <router-link
         v-for="deployment of filteredDeployments"
-        class="flex justify-between items-center m-0 p-3 text-current no-underline text-left border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
+        class="flex justify-between items-center m-0 p-3 text-current hover:bg-blue-700 hover:text-white no-underline text-left border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
         :to="`/clusters/${params.clusterId}/deployments/${deployment.id.replace(
           `${deployment.metadata.namespace}/`,
           ''

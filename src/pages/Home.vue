@@ -11,7 +11,7 @@
       <div class="border border-gray-300 rounded-lg">
         <router-link
           v-for="cluster of filteredClusters"
-          class="flex justify-between items-center text-current no-underline m-0 p-3 text-left border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
+          class="flex justify-between items-center text-current hover:bg-blue-700 hover:text-white no-underline m-0 p-3 text-left border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
           :to="`/clusters/${cluster.id}`"
         >
           {{ cluster.name }}
