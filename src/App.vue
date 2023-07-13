@@ -3,7 +3,8 @@
 </template>
 
 <style>
-html, body {
+html,
+body {
   padding: 0;
   margin: 0;
   width: 100%;

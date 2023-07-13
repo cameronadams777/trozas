@@ -1,17 +1,19 @@
 <template>
   <MainLayout :loading="isLoading">
-    <input
-      id="filter"
-      name="filter"
-      placeholder="Filter:"
-      class="p-3 w-full text-lg"
-      @input="updateFilter"
-    />
-    <div
-      v-for="log of filteredLogs"
-      class="p-4 border-b border-gray-300 border-b-solid"
-    >
-      <span v-html="logWithHighlight(log)"></span>
+    <div class="flex flex-col">
+      <input
+        id="filter"
+        name="filter"
+        placeholder="Filter:"
+        class="p-3 text-lg"
+        @input="updateFilter"
+      />
+      <div
+        v-for="log of filteredLogs"
+        class="p-4 border-b border-gray-300 border-b-solid"
+      >
+        <span v-html="logWithHighlight(log)"></span>
+      </div>
     </div>
   </MainLayout>
 </template>

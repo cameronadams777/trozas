@@ -1,34 +1,36 @@
 <template>
   <MainLayout :loading="isLoading">
-    <input
-      id="filter"
-      name="filter"
-      placeholder="Filter:"
-      class="p-3 w-full text-lg"
-      @input="(ev) => (filter = (ev.target as HTMLInputElement).value)"
-    />
-    <div class="border border-gray-300 rounded-lg">
-      <button
-        v-for="cluster of filteredClusters"
-        class="w-full flex justify-between items-center m-0 p-3 bg-white hover:bg-gray-900 hover:text-white text-left border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
-        @click="$router.push(`/clusters/${cluster.id}`)"
-      >
-        {{ cluster.name }}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="feather feather-chevron-right"
+    <div class="flex flex-col">
+      <input
+        id="filter"
+        name="filter"
+        placeholder="Filter:"
+        class="p-3 text-lg"
+        @input="(ev) => (filter = (ev.target as HTMLInputElement).value)"
+      />
+      <div class="border border-gray-300 rounded-lg">
+        <router-link
+          v-for="cluster of filteredClusters"
+          class="flex justify-between items-center text-current no-underline m-0 p-3 text-left border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
+          :to="`/clusters/${cluster.id}`"
         >
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
+          {{ cluster.name }}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-chevron-right"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </router-link>
+      </div>
     </div>
   </MainLayout>
 </template>
