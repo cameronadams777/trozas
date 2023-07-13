@@ -5,13 +5,13 @@
       name="filter"
       placeholder="Filter:"
       class="p-3 w-full text-lg"
-      @input="(ev) => (filter = (ev.target as HTMLInputElement).value)"
+      @input="updateFilter"
     />
     <div
       v-for="log of filteredLogs"
       class="p-4 border-b border-gray-300 border-b-solid"
     >
-      <span>{{ log }}</span>
+      <span v-html="logWithHighlight(log)"></span>
     </div>
   </MainLayout>
 </template>
@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import debounce from "lodash/debounce";
 import MainLayout from "src/layouts/MainLayout.vue";
 import { useRancherClient } from "src/plugins/rancher-client";
 
@@ -31,6 +32,19 @@ const isLoading = ref<boolean>(true);
 
 const filteredLogs = computed<string[]>(() =>
   logs.value.filter((val) => val.includes(filter.value))
+);
+
+const logWithHighlight = (log: string) =>
+  filter.value.length > 0
+    ? log.replace(
+        filter.value,
+        `<span class="p-0 m-0 bg-indigo-600 text-white">${filter.value}</span>`
+      )
+    : log;
+
+const updateFilter = debounce(
+  (ev: Event) => (filter.value = (ev.target as HTMLInputElement).value),
+  500
 );
 
 onMounted(async () => {
