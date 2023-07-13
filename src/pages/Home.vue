@@ -1,8 +1,9 @@
 <template>
   <MainLayout :loading="isLoading">
     <div class="border border-gray-300 rounded-lg">
-      <button 
-        v-for="cluster of clusters" 
+      <button
+        v-for="cluster of clusters"
+        class="w-full m-0 p-3 bg-white hover:bg-gray-900 hover:text-white border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
         @click="$router.push(`/clusters/${cluster.id}`)"
       >
         {{ cluster.name }}
@@ -28,7 +29,7 @@ onMounted(async () => {
     const clusterData = await rancherClient.getClusters();
     clusters.value = clusterData.data;
     isLoading.value = false;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     router.push("/500");
     // TODO: Redirect to 500 page

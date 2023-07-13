@@ -1,6 +1,17 @@
 <template>
   <MainLayout :loading="isLoading">
-    <button v-for="deployment of deployments" @click="$router.push(`/clusters/${params.clusterId}/deployments/${deployment.id.replace(`${deployment.metadata.namespace}/`, '')}`)">
+    <button
+      v-for="deployment of deployments"
+      class="w-full m-0 p-3 bg-white hover:bg-gray-900 hover:text-white border-none border-b border-gray-300 border-b-solid text-lg transition-colors duration-200 cursor-pointer"
+      @click="
+        $router.push(
+          `/clusters/${params.clusterId}/deployments/${deployment.id.replace(
+            `${deployment.metadata.namespace}/`,
+            '',
+          )}`,
+        )
+      "
+    >
       {{ deployment.metadata.name }}
     </button>
   </MainLayout>
@@ -20,10 +31,12 @@ const deployments = ref<any[]>([]);
 
 onMounted(async () => {
   try {
-    const deploymentsResponse = await rancherClient.getDeployments(params.clusterId);
+    const deploymentsResponse = await rancherClient.getDeployments(
+      params.clusterId,
+    );
     deployments.value = deploymentsResponse.data;
     isLoading.value = false;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 });
