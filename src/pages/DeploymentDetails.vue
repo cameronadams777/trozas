@@ -8,7 +8,7 @@
       @input="(ev) => (filter = (ev.target as HTMLInputElement).value)"
     />
     <div
-      v-for="log of logs"
+      v-for="log of filteredLogs"
       class="p-4 border-b border-gray-300 border-b-solid"
     >
       <span>{{ log }}</span>
@@ -26,11 +26,11 @@ const { params } = useRoute();
 const rancherClient = useRancherClient();
 
 const filter = ref<string>("");
-const logs = ref<string>("");
+const logs = ref<string[]>([]);
 const isLoading = ref<boolean>(true);
 
-const filteredLogs = computed(() =>
-  filter.length ? logs.value.filter((val) => val.includes(filter)) : logs,
+const filteredLogs = computed<string[]>(() =>
+  logs.value.filter((val) => val.includes(filter.value))
 );
 
 onMounted(async () => {
@@ -40,7 +40,7 @@ onMounted(async () => {
       .then((res: any) =>
         res.data
           .filter((value: any) => value.id.includes(params.deploymentId))
-          .map((pod: any) => pod.id.replace(`${pod.metadata.namespace}/`, "")),
+          .map((pod: any) => pod.id.replace(`${pod.metadata.namespace}/`, ""))
       );
     const logsResponse = (
       await Promise.all(
@@ -48,9 +48,9 @@ onMounted(async () => {
           async (pod: any) =>
             await rancherClient.getLogs(
               params.clusterId as string,
-              pod as string,
-            ),
-        ),
+              pod as string
+            )
+        )
       )
     )
       .join(" ")
