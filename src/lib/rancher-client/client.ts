@@ -56,10 +56,14 @@ export class RancherClient {
     });
   }
 
-  public getLogs(clusterId: string, podId: string): Promise<any> {
+  public getLogs(
+    clusterId: string,
+    environment: string,
+    podId: string
+  ): Promise<any> {
     this.assertHasConnectionDetails();
     return httpClient.get({
-      url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/api/v1/namespaces/dev/pods/${podId}/log?previous=false&timestamps=true&pretty=true&sinceSeconds=43200`,
+      url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/api/v1/namespaces/${environment}/pods/${podId}/log?previous=false&timestamps=true&pretty=true&sinceSeconds=43200`,
       options: {
         responseType: ResponseType.Text,
         headers: this.buildHeaders(),

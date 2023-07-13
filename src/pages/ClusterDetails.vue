@@ -14,7 +14,7 @@
         :to="`/clusters/${params.clusterId}/deployments/${deployment.id.replace(
           `${deployment.metadata.namespace}/`,
           ''
-        )}`"
+        )}/environment/${deployment.id.split('/')[0]}`"
       >
         {{ deployment.metadata.name }}
         <svg

@@ -9,7 +9,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import("src/pages/Home.vue"),
   },
   {
-    path: "/clusters/:clusterId/deployments/:deploymentId",
+    path: "/clusters/:clusterId/deployments/:deploymentId/environment/:environment",
     name: "DeploymentDetails",
     component: () => import("src/pages/DeploymentDetails.vue"),
   },

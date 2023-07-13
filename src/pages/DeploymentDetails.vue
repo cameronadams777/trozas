@@ -64,6 +64,7 @@ onMounted(async () => {
           async (pod: any) =>
             await rancherClient.getLogs(
               params.clusterId as string,
+              params.environment as string,
               pod as string
             )
         )
