@@ -5,6 +5,7 @@ import { IConnectionDetails } from "src/types";
 // TODO: Need to type all requests
 export class RancherClient {
   private connectionDetails: IConnectionDetails;
+  private cache: Record<string, any> = {};
 
   constructor(connectionDetails: IConnectionDetails) {
     this.connectionDetails = connectionDetails;
@@ -14,24 +15,35 @@ export class RancherClient {
     this.connectionDetails = connectionDetails;
   }
 
-  public getClusters(): Promise<any> {
+  public async getClusters(): Promise<any> {
     this.assertHasConnectionDetails();
-    return httpClient.get({
+    if (this.cache.clusters) return this.cache.clusters;
+    const clusters = await httpClient.get({
       url: `${this.connectionDetails.instanceUrl}/v3/cluster`,
       options: {
         headers: this.buildHeaders(),
       },
     });
+    if (clusters) this.cache.clusters = clusters;
+    return clusters;
   }
 
-  public getDeployments(clusterId: string): Promise<any> {
+  public async getDeployments(clusterId: string): Promise<any> {
     this.assertHasConnectionDetails();
-    return httpClient.get({
+    if (this.cache.deployments?.[clusterId])
+      return this.cache.deployments[clusterId];
+    const deployments = await httpClient.get({
       url: `${this.connectionDetails.instanceUrl}/k8s/clusters/${clusterId}/v1/apps.deployments`,
       options: {
         headers: this.buildHeaders(),
       },
     });
+    if (deployments)
+      this.cache.deployments = {
+        ...this.cache.deployments,
+        [clusterId]: deployments,
+      };
+    return deployments;
   }
 
   public getPods(clusterId: string): Promise<any> {
