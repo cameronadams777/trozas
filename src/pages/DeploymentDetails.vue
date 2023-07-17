@@ -21,7 +21,7 @@
       class="p-4 w-full flex justify-center"
     >
       <button
-        class="border-none text-lg font-bold bg-transparent transition-colors duration-200 cursor-pointer hover:underline hover:text-blue-500"
+        class="border-none text-current text-lg font-bold bg-transparent transition-colors duration-200 cursor-pointer hover:underline hover:text-blue-500"
         @click="() => page++"
       >
         Load More
