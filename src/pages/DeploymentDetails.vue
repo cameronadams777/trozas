@@ -5,6 +5,7 @@
         id="filter"
         name="filter"
         placeholder="Filter:"
+        autocomplete="off"
         class="p-3 text-lg"
         @input="updateFilter"
       />
@@ -58,6 +59,7 @@ onMounted(async () => {
           .filter((value: any) => value.id.includes(params.deploymentId))
           .map((pod: any) => pod.id.replace(`${pod.metadata.namespace}/`, ""))
       );
+
     const logsResponse = (
       await Promise.all(
         pods.map(
@@ -72,6 +74,7 @@ onMounted(async () => {
     )
       .join(" ")
       .split(/\r?\n/) as string[];
+
     logs.value = logsResponse;
     isLoading.value = false;
   } catch (error) {
