@@ -78,5 +78,4 @@ import { useThemeStore } from "src/state/theme";
 const themeStore = useThemeStore();
 const { theme } = storeToRefs(themeStore);
 const { toggleTheme } = themeStore;
-console.log(theme);
 </script>

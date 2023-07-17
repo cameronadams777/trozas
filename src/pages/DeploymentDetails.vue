@@ -16,26 +16,36 @@
         <span v-html="logWithHighlight(log)"></span>
       </div>
     </div>
+    <div
+      v-if="logs.length > page * LOGS_PER_PAGE"
+      class="p-4 w-full flex justify-center"
+    >
+      <button
+        class="border-none text-lg font-bold bg-transparent transition-colors duration-200 cursor-pointer hover:underline hover:text-blue-500"
+        @click="() => page++"
+      >
+        Load More
+      </button>
+    </div>
   </MainLayout>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { from } from "rxjs";
 import debounce from "lodash/debounce";
 import MainLayout from "src/layouts/MainLayout.vue";
 import { useRancherClient } from "src/plugins/rancher-client";
-
 const { params } = useRoute();
 const rancherClient = useRancherClient();
 
-const filter = ref<string>("");
-const logs = ref<string[]>([]);
-const isLoading = ref<boolean>(true);
+const LOGS_PER_PAGE = 100;
 
-const filteredLogs = computed<string[]>(() =>
-  logs.value.filter((val) => val.includes(filter.value))
-);
+const logs = ref<string[]>([]);
+const filter = ref<string>("");
+const page = ref<number>(1);
+const isLoading = ref<boolean>(true);
 
 const logWithHighlight = (log: string) =>
   filter.value.length > 0
@@ -50,6 +60,12 @@ const updateFilter = debounce(
   500
 );
 
+const filteredLogs = computed<string[]>(() =>
+  logs.value
+    .filter((val) => val.includes(filter.value))
+    .slice(1, page.value * LOGS_PER_PAGE)
+);
+
 onMounted(async () => {
   try {
     const pods = await rancherClient
@@ -60,23 +76,19 @@ onMounted(async () => {
           .map((pod: any) => pod.id.replace(`${pod.metadata.namespace}/`, ""))
       );
 
-    const logsResponse = (
-      await Promise.all(
-        pods.map(
-          async (pod: any) =>
-            await rancherClient.getLogs(
-              params.clusterId as string,
-              params.environment as string,
-              pod as string
-            )
+    pods.forEach((pod: string) =>
+      from(
+        rancherClient.getLogs(
+          params.clusterId as string,
+          params.environment as string,
+          pod
         )
-      )
-    )
-      .join(" ")
-      .split(/\r?\n/) as string[];
-
-    logs.value = logsResponse;
-    isLoading.value = false;
+      ).subscribe((logData) => {
+        const formattedLogs = logData.split(/\r?\n/);
+        logs.value.push(...formattedLogs);
+        isLoading.value = false;
+      })
+    );
   } catch (error) {
     console.error(error);
   }

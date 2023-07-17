@@ -9,8 +9,10 @@
   "dependencies": {
     "@tauri-apps/api": "^1.4.0",
     "@unocss/reset": "^0.53.5",
+    "@vueuse/rxjs": "^10.2.1",
     "lodash": "^4.17.21",
     "pinia": "^2.1.4",
+    "rxjs": "^7.8.1",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
     "zod": "^3.21.4"
