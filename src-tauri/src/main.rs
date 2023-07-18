@@ -6,9 +6,6 @@
 
 use radix64::STD;
 use serde::{Serialize, Deserialize};
-//use futures_util::StreamExt;
-//use tokio_tungstenite::connect_async;
-//use tokio::io::AsyncWriteExt;
 use std::{
     path::Path, 
     collections::HashMap,
@@ -62,37 +59,6 @@ fn get_or_build_config_dir() -> String {
 async fn main() {
     let _ = get_or_build_config_dir();
     tauri::Builder::default()
-        /*.setup(|app| {
-            // Spawn new thread that handles websocket connections
-            thread::spawn(|| async {
-                // Connect to rancher logs ws endpoint
-                let url = url::Url::parse(&RANCHER_LOGS_URL).unwrap();
-
-                let (_, stdin_rx) = futures_channel::mpsc::unbounded();
-
-                let (ws_stream, _) = connect_async(url).await.expect("Failed to connect.");
-                println!("WebSocket handshake has been successfully completed");
-
-                let (_, read) = ws_stream.split();
-                
-                let read_future = read.for_each(|message| async {
-                    println!("receiving...");
-                    let data = message.unwrap().into_data();
-                    tokio::io::stdout().write(&data).await.unwrap();
-                    println!("received!");
-                });
-
-                read_future.await;
-
-                // Pipe logs out and convert them into a formatter
-
-                // After logs have been formatted properly, create a batch of logs
-
-                // Once batch reaches threshold _or_ a timer has completed, emit an event 
-                // to the webview for displaying
-            });
-            Ok(())
-        })*/
         .invoke_handler(tauri::generate_handler![
             get_connection_details,
             save_connection_details,
