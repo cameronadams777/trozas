@@ -1,6 +1,7 @@
 {
   "name": "logs-viewer",
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
