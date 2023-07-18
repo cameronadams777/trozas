@@ -40,14 +40,14 @@ import { useRancherClient } from "src/plugins/rancher-client";
 const { params } = useRoute();
 const rancherClient = useRancherClient();
 
-const LOGS_PER_PAGE = 100;
+const LOGS_PER_PAGE: number = 100;
 
 const logs = ref<string[]>([]);
 const filter = ref<string>("");
 const page = ref<number>(1);
 const isLoading = ref<boolean>(true);
 
-const logWithHighlight = (log: string) =>
+const logWithHighlight = (log: string): string =>
   filter.value.length > 0
     ? log.replace(
         filter.value,

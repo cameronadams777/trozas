@@ -1,6 +1,6 @@
 <template>
   <MainLayout :loading="isLoading">
-    <div class="flex flex-col">
+    <div class="min-h-full flex flex-col">
       <input
         id="filter"
         name="filter"
