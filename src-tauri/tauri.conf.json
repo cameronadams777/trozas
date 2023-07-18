@@ -7,12 +7,12 @@
   },
   "package": {
     "productName": "Trozas",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
-      "all": true,
       "http": {
+        "request": true,
         "scope": ["https://**"]
       }
     },
@@ -31,7 +31,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.trozas.app",
+      "identifier": "com.trozas.desktop",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
