@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="p-4 flex justify-between items-center border-b border-b-solid border-gray-400"
+    class="fixed w-nav p-4 flex justify-between items-center border-b border-b-solid border-gray-400 bg-inherit"
   >
     <div class="flex">
       <button
@@ -79,3 +79,9 @@ const themeStore = useThemeStore();
 const { theme } = storeToRefs(themeStore);
 const { toggleTheme } = themeStore;
 </script>
+
+<style scoped>
+.w-nav {
+  width: calc(100% - 2rem);
+}
+</style>
