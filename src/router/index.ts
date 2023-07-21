@@ -31,7 +31,12 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
   // Ensure to clear filters when navigating to a new page
   const { updateFilters } = useFilterStore();
-  updateFilters({ podIds: [], selectedPods: [] });
+  updateFilters({
+    podIds: [],
+    selectedPods: [],
+    relativeLog: undefined,
+    relativeTimes: undefined,
+  });
 
   const connectionDetails = await getConnectionDetails();
   const hasConnectionDetails = Object.values(connectionDetails).every(

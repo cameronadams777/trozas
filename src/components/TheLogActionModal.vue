@@ -33,12 +33,42 @@
         </button>
         <div class="pt-16 flex flex-col justify-center items-center">
           <h2>Show Logs in Surronding:</h2>
-          <button @click="setRelativeTime(1)">1 Second</button>
-          <button @click="setRelativeTime(5)">5 Seconds</button>
-          <button @click="setRelativeTime(30)">30 Seconds</button>
-          <button @click="setRelativeTime(60)">1 Minute</button>
-          <button @click="setRelativeTime(60 * 5)">5 Mintues</button>
-          <button @click="setRelativeTime(60 * 10)">10 Minutes</button>
+          <button
+            class="w-1/2 lg:w-1/5 p-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md border-none mb-2 cursor-pointer"
+            @click="setRelativeTime(1)"
+          >
+            1 Second
+          </button>
+          <button
+            class="w-1/2 lg:w-1/5 p-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md border-none mb-2 cursor-pointer"
+            @click="setRelativeTime(5)"
+          >
+            5 Seconds
+          </button>
+          <button
+            class="w-1/2 lg:w-1/5 p-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md border-none mb-2 cursor-pointer"
+            @click="setRelativeTime(30)"
+          >
+            30 Seconds
+          </button>
+          <button
+            class="w-1/2 lg:w-1/5 p-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md border-none mb-2 cursor-pointer"
+            @click="setRelativeTime(60)"
+          >
+            1 Minute
+          </button>
+          <button
+            class="w-1/2 lg:w-1/5 p-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md border-none mb-2 cursor-pointer"
+            @click="setRelativeTime(60 * 5)"
+          >
+            5 Mintues
+          </button>
+          <button
+            class="w-1/2 lg:w-1/5 p-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md border-none mb-2 cursor-pointer"
+            @click="setRelativeTime(60 * 10)"
+          >
+            10 Minutes
+          </button>
         </div>
       </div>
     </div>
