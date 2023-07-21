@@ -4,6 +4,7 @@ export interface IConnectionDetails {
 }
 
 export interface ILog {
+  timestamp: Date;
   podId: string;
   value: string;
 }

@@ -1,8 +1,11 @@
 import { defineStore } from "pinia";
+import { ILog } from "src/types";
 
-interface IFilters { 
+interface IFilters {
   podIds: string[];
   selectedPods: string[];
+  relativeLog?: ILog;
+  relativeTimes?: [Date, Date];
 }
 
 interface IFilterState {
@@ -15,13 +18,15 @@ export const useFilterStore = defineStore({
     filters: {
       podIds: [],
       selectedPods: [],
+      relativeLog: undefined,
+      relativeTimes: undefined,
     },
   }),
   actions: {
     updateFilters(newFiltersState: Partial<IFilters>): void {
       this.filters = {
-         ...this.filters,
-         ...newFiltersState
+        ...this.filters,
+        ...newFiltersState,
       };
     },
   },

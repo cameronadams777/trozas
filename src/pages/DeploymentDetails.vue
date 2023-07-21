@@ -32,15 +32,27 @@
         class="p-3 text-lg"
         @input="updateFilter"
       />
-      <div
+      <button
         v-for="log of filteredLogs"
-        class="p-4 border-b border-gray-300 border-b-solid"
+        :disabled="filters.relativeLog === log"
+        class="p-4 text-left border-none border-b border-gray-300 border-b-solid hover:text-white transition-colors duration-200"
+        :class="{
+          'bg-yellow-700 text-white': filters.relativeLog === log,
+          'bg-inherit hover:bg-blue-700 cursor-pointer':
+            filters.relativeLog !== log,
+        }"
+        @click="
+          () => {
+            updateFilters({ relativeLog: log });
+            isLogActionModalOpen = true;
+          }
+        "
       >
         <span v-html="logWithHighlight(log.value)" class="break-words"></span>
-      </div>
+      </button>
     </div>
     <div
-      v-if="logs.length > page * LOGS_PER_PAGE"
+      v-if="logs.length > page * LOGS_PER_PAGE && !filters.relativeLog"
       class="p-4 w-load-more flex justify-center"
     >
       <button
@@ -50,6 +62,10 @@
         Load More
       </button>
     </div>
+    <TheLogActionModal
+      :is-open="isLogActionModalOpen"
+      @close="isLogActionModalOpen = false"
+    />
     <TheFilterModal
       :is-open="isFilterModalOpen"
       @close="isFilterModalOpen = false"
@@ -62,8 +78,10 @@ import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { from } from "rxjs";
 import debounce from "lodash/debounce";
+import * as luxon from "luxon";
 import MainLayout from "src/layouts/MainLayout.vue";
 import TheFilterModal from "src/components/TheFilterModal.vue";
+import TheLogActionModal from "src/components/TheLogActionModal.vue";
 import { ILog } from "src/types";
 import { useFilterStore } from "src/state/filter";
 import { useRancherClient } from "src/plugins/rancher-client";
@@ -74,7 +92,7 @@ const rancherClient = useRancherClient();
 
 const filterStore = useFilterStore();
 const { updateFilters } = filterStore;
-const { filters } = storeToRefs(filterStore); 
+const { filters } = storeToRefs(filterStore);
 
 const LOGS_PER_PAGE: number = 100;
 
@@ -83,6 +101,7 @@ const filter = ref<string>("");
 const page = ref<number>(1);
 const isLoading = ref<boolean>(true);
 const isFilterModalOpen = ref<boolean>(false);
+const isLogActionModalOpen = ref<boolean>(false);
 
 const logWithHighlight = (log: string): string =>
   filter.value.length > 0
@@ -97,12 +116,26 @@ const updateFilter = debounce(
   500
 );
 
-const filteredLogs = computed<ILog[]>(() =>
-  logs.value
-    .filter((log) => filters.value.selectedPods.length ? filters.value.selectedPods.includes(log.podId) : true)
+const filteredLogs = computed<ILog[]>(() => {
+  if (filters.value.relativeLog && filters.value.relativeTimes?.length) {
+    return logs.value.filter((log) => {
+      const logTime = luxon.DateTime.fromJSDate(log.timestamp);
+      const relativeTimes =
+        filters.value.relativeTimes?.map((time) =>
+          luxon.DateTime.fromJSDate(time)
+        ) ?? [];
+      return logTime > relativeTimes[0] && logTime < relativeTimes[1];
+    });
+  }
+  return logs.value
+    .filter((log) =>
+      filters.value.selectedPods.length
+        ? filters.value.selectedPods.includes(log.podId)
+        : true
+    )
     .filter((log) => log.value.includes(filter.value))
-    .slice(1, page.value * LOGS_PER_PAGE)
-);
+    .slice(1, page.value * LOGS_PER_PAGE);
+});
 
 onMounted(async () => {
   try {
@@ -125,7 +158,7 @@ onMounted(async () => {
         )
       ).subscribe((logData: string) => {
         const formattedLogs = logData.split(/\r?\n/).map((log) => ({
-          timestamp: log.substring(0, log.indexOf("Z") + 1),
+          timestamp: new Date(log.substring(0, log.indexOf("Z") + 1)),
           podId: pod,
           value: log,
         }));

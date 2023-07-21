@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { getConnectionDetails } from "src/lib/trozas";
+import { useFilterStore } from "src/state/filter";
 
 const routes: RouteRecordRaw[] = [
   { path: "/", name: "Setup", component: () => import("src/pages/Setup.vue") },
@@ -28,6 +29,10 @@ const router = createRouter({
 
 // TODO: Add logic for redirects depending on connectionDetail availablility
 router.beforeEach(async (to, from) => {
+  // Ensure to clear filters when navigating to a new page
+  const { updateFilters } = useFilterStore();
+  updateFilters({ podIds: [], selectedPods: [] });
+
   const connectionDetails = await getConnectionDetails();
   const hasConnectionDetails = Object.values(connectionDetails).every(
     (val) => val.length > 0
