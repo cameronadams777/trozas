@@ -1,5 +1,28 @@
 <template>
   <MainLayout :loading="isLoading">
+    <template v-slot:nav-buttons>
+      <button
+        class="m-0 mr-4 p-0 bg-transparent text-current hover:text-blue-500 border-none transition-colors duration-200 cursor-pointer"
+        @click="isFilterModalOpen = !isFilterModalOpen"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-filter"
+        >
+          <polygon
+            points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"
+          ></polygon>
+        </svg>
+      </button>
+    </template>
     <div class="flex flex-col">
       <input
         id="filter"
@@ -13,12 +36,12 @@
         v-for="log of filteredLogs"
         class="p-4 border-b border-gray-300 border-b-solid"
       >
-        <span v-html="logWithHighlight(log)"></span>
+        <span v-html="logWithHighlight(log.value)" class="break-words"></span>
       </div>
     </div>
     <div
       v-if="logs.length > page * LOGS_PER_PAGE"
-      class="p-4 w-full flex justify-center"
+      class="p-4 w-load-more flex justify-center"
     >
       <button
         class="border-none text-current text-lg font-bold bg-transparent transition-colors duration-200 cursor-pointer hover:underline hover:text-blue-500"
@@ -27,6 +50,10 @@
         Load More
       </button>
     </div>
+    <TheFilterModal
+      :is-open="isFilterModalOpen"
+      @close="isFilterModalOpen = false"
+    />
   </MainLayout>
 </template>
 
@@ -36,16 +63,26 @@ import { useRoute } from "vue-router";
 import { from } from "rxjs";
 import debounce from "lodash/debounce";
 import MainLayout from "src/layouts/MainLayout.vue";
+import TheFilterModal from "src/components/TheFilterModal.vue";
+import { ILog } from "src/types";
+import { useFilterStore } from "src/state/filter";
 import { useRancherClient } from "src/plugins/rancher-client";
+import { storeToRefs } from "pinia";
+
 const { params } = useRoute();
 const rancherClient = useRancherClient();
 
+const filterStore = useFilterStore();
+const { updateFilters } = filterStore;
+const { filters } = storeToRefs(filterStore); 
+
 const LOGS_PER_PAGE: number = 100;
 
-const logs = ref<string[]>([]);
+const logs = ref<ILog[]>([]);
 const filter = ref<string>("");
 const page = ref<number>(1);
 const isLoading = ref<boolean>(true);
+const isFilterModalOpen = ref<boolean>(false);
 
 const logWithHighlight = (log: string): string =>
   filter.value.length > 0
@@ -60,21 +97,24 @@ const updateFilter = debounce(
   500
 );
 
-const filteredLogs = computed<string[]>(() =>
+const filteredLogs = computed<ILog[]>(() =>
   logs.value
-    .filter((val) => val.includes(filter.value))
+    .filter((log) => filters.value.selectedPods.length ? filters.value.selectedPods.includes(log.podId) : true)
+    .filter((log) => log.value.includes(filter.value))
     .slice(1, page.value * LOGS_PER_PAGE)
 );
 
 onMounted(async () => {
   try {
-    const pods = await rancherClient
+    const pods: string[] = await rancherClient
       .getPods(params.clusterId as string)
       .then((res: any) =>
         res.data
           .filter((value: any) => value.id.includes(params.deploymentId))
           .map((pod: any) => pod.id.replace(`${pod.metadata.namespace}/`, ""))
       );
+
+    updateFilters({ podIds: pods });
 
     pods.forEach((pod: string) =>
       from(
@@ -83,8 +123,12 @@ onMounted(async () => {
           params.environment as string,
           pod
         )
-      ).subscribe((logData) => {
-        const formattedLogs = logData.split(/\r?\n/);
+      ).subscribe((logData: string) => {
+        const formattedLogs = logData.split(/\r?\n/).map((log) => ({
+          timestamp: log.substring(0, log.indexOf("Z") + 1),
+          podId: pod,
+          value: log,
+        }));
         logs.value.push(...formattedLogs);
         isLoading.value = false;
       })
@@ -94,3 +138,9 @@ onMounted(async () => {
   }
 });
 </script>
+
+<style scoped>
+.w-load-more {
+  width: calc(100% - 2rem);
+}
+</style>

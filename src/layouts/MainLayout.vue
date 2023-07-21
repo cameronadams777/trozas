@@ -6,7 +6,11 @@
       'min-h-full transition-colors duration-200': true,
     }"
   >
-    <TheNavBar />
+    <TheNavBar>
+      <template v-slot:nav-buttons>
+        <slot name="nav-buttons" />
+      </template>
+    </TheNavBar>
     <div
       v-if="loading"
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -17,7 +21,7 @@
       <slot />
     </main>
     <button
-      class="fixed bottom-5 right-5 w-12 h-12 bg-blue-500 hover:bg-blue-700 shadow-md border-none rounded-full text-white transition-colors duration-300"
+      class="fixed bottom-5 right-5 w-12 h-12 bg-blue-500 hover:bg-blue-700 shadow-md border-none rounded-full text-white transition-colors duration-200 cursor-pointer"
       @click="scrollTop"
     >
       <svg
