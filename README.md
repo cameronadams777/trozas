@@ -29,9 +29,10 @@ Once you have downloaded and installed the app, you will need to input your Ranc
 the top nav bar. Upon clicking that image, you should be presented with a dropdown which includes "Accounts & API Keys". You will need to click this link and navigate to the API Keys page
 (Note: this may take some time as rancher's /tokens request can take a while for some reason).
 
-From the Account & API Keys page, you should see a url next to "API Endpoint". This will be your "Instance URL" value. You will next need to click the "Create API Key" button. This will present
-a form for you to complete. Unless you are only monitoring a specific cluster, I would recommend not scoping the key and then set any sort of expiration you would like (for safety, I typically set
-the expiry to 365 days). After completing the form, you will be presented with some information. The `Bearer Token` value is what you will want for your "API Token" in the Trozas application.
+From the Account & API Keys page, you should see a url next to "API Endpoint". This will be your "Instance URL" value however, it should be noted that the `v3` portion of this url should be left off as Trozas
+handles this internally. You will next need to click the "Create API Key" button. This will present a form for you to complete. Unless you are only monitoring a specific cluster, I would recommend not scoping
+the key and then set any sort of expiration you would like (for safety, I typically set the expiry to 365 days). After completing the form, you will be presented with some information. The `Bearer Token`
+value is what you will want for your "API Token" in the Trozas application.
 
 After entering these values into the Trozas application, you can click "Submit" and you should be good to go!
 
