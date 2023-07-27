@@ -6,6 +6,7 @@
         name="filter"
         placeholder="Filter:"
         autocomplete="off"
+        spellcheck="false"
         class="p-3 text-lg"
         @input="(ev) => (filter = (ev.target as HTMLInputElement).value)"
       />
