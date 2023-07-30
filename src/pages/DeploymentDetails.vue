@@ -2,6 +2,27 @@
   <MainLayout :loading="isLoading">
     <template v-slot:nav-buttons>
       <button
+        v-if="filtersAreSet"
+        class="m-0 mr-4 p-0 bg-transparent text-current hover:text-blue-500 border-none transition-colors duration-200 cursor-pointer"
+        @click="resetState"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-x"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <button
         class="m-0 mr-4 p-0 bg-transparent text-current hover:text-blue-500 border-none transition-colors duration-200 cursor-pointer"
         @click="isFilterModalOpen = !isFilterModalOpen"
       >
@@ -92,8 +113,8 @@ const { params } = useRoute();
 const rancherClient = useRancherClient();
 
 const filterStore = useFilterStore();
-const { updateFilters } = filterStore;
-const { filters } = storeToRefs(filterStore);
+const { resetState, updateFilters, updatePodIds } = filterStore;
+const { filtersAreSet, filters } = storeToRefs(filterStore);
 
 const LOGS_PER_PAGE: number = 100;
 
@@ -148,7 +169,7 @@ onMounted(async () => {
           .map((pod: any) => pod.id.replace(`${pod.metadata.namespace}/`, ""))
       );
 
-    updateFilters({ podIds: pods });
+    updatePodIds(pods);
 
     pods.forEach((pod: string) =>
       from(

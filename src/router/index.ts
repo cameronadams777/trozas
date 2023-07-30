@@ -30,9 +30,9 @@ const router = createRouter({
 // TODO: Add logic for redirects depending on connectionDetail availablility
 router.beforeEach(async (to, from) => {
   // Ensure to clear filters when navigating to a new page
-  const { updateFilters } = useFilterStore();
+  const { updatePodIds, updateFilters } = useFilterStore();
+  updatePodIds([]);
   updateFilters({
-    podIds: [],
     selectedPods: [],
     relativeLog: undefined,
     relativeTimes: undefined,

@@ -13,7 +13,7 @@
       <div class="relative">
         <button
           class="absolute top-5 right-5 bg-transparent text-current hover:text-blue-700 border-none z-50 cursor-pointer"
-          @click="$emit('close')"
+          @click="clearStateAndClose"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -127,5 +127,13 @@ function setRelativeTime(time: number) {
     emit("close");
   }
   console.error("A log must be selected to use this feature.");
+}
+
+function clearStateAndClose() {
+  updateFilters({
+    relativeLog: undefined,
+    relativeTimes: undefined,
+  });
+  emit("close");
 }
 </script>

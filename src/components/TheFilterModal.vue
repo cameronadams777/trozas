@@ -32,10 +32,15 @@
           </svg>
         </button>
         <div class="pt-16 flex justify-center items-center">
-          <ul v-if="filters.podIds.length">
+          <ul v-if="podIds.length">
             <h3>Filter by Pod</h3>
-            <div v-for="pod in filters.podIds">
-              <input type="checkbox" :id="pod" :value="pod" @change="(e) => updateSelectedPods(e, pod)" />
+            <div v-for="pod in podIds">
+              <input
+                type="checkbox"
+                :id="pod"
+                :value="pod"
+                @change="(e) => updateSelectedPods(e, pod)"
+              />
               <label for="{{pod}}" class="ml-2">{{ pod }}</label>
             </div>
           </ul>
@@ -60,8 +65,8 @@ const themeStore = useThemeStore();
 const { theme } = storeToRefs(themeStore);
 
 const filterStore = useFilterStore();
-const { updateFilters } = filterStore;
-const { filters } = storeToRefs(filterStore);
+const { filtersAreSet, updateFilters } = filterStore;
+const { filters, podIds } = storeToRefs(filterStore);
 
 watch(
   () => props.isOpen,
@@ -78,7 +83,9 @@ function updateSelectedPods(e: Event, pod: string) {
   if (target.checked) {
     updateFilters({ selectedPods: [...filters.value.selectedPods, pod] });
   } else {
-    updateFilters({ selectedPods: filters.value.selectedPods.filter((p) => p !== pod) });
+    updateFilters({
+      selectedPods: filters.value.selectedPods.filter((p) => p !== pod),
+    });
   }
-} 
+}
 </script>
