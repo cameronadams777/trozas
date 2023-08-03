@@ -70,7 +70,7 @@
           }
         "
       >
-        <span v-html="logWithHighlight(log.value)" class="break-words"></span>
+        <span v-html="log.value" class="break-words"></span>
       </button>
     </div>
     <div
@@ -108,6 +108,7 @@ import { ILog } from "src/types";
 import { useFilterStore } from "src/state/filter";
 import { useRancherClient } from "src/plugins/rancher-client";
 import { storeToRefs } from "pinia";
+import { w } from "@tauri-apps/api/clipboard-79413165";
 
 const { params } = useRoute();
 const rancherClient = useRancherClient();
@@ -125,22 +126,16 @@ const isLoading = ref<boolean>(true);
 const isFilterModalOpen = ref<boolean>(false);
 const isLogActionModalOpen = ref<boolean>(false);
 
-const logWithHighlight = (log: string): string =>
-  filter.value.length > 0
-    ? log.replace(
-        filter.value,
-        `<span class="p-0 m-0 bg-indigo-600 text-white">${filter.value}</span>`
-      )
-    : log;
-
 const updateFilter = debounce(
   (ev: Event) => (filter.value = (ev.target as HTMLInputElement).value),
   500
 );
 
 const filteredLogs = computed<ILog[]>(() => {
+  let filteredLogs = [];
+
   if (filters.value.relativeLog && filters.value.relativeTimes?.length) {
-    return logs.value.filter((log) => {
+    filteredLogs = logs.value.filter((log) => {
       const logTime = luxon.DateTime.fromJSDate(log.timestamp);
       const relativeTimes =
         filters.value.relativeTimes?.map((time) =>
@@ -148,15 +143,26 @@ const filteredLogs = computed<ILog[]>(() => {
         ) ?? [];
       return logTime > relativeTimes[0] && logTime < relativeTimes[1];
     });
+  } else {
+    filteredLogs = logs.value
+      .filter((log) =>
+        filters.value.selectedPods.length
+          ? filters.value.selectedPods.includes(log.podId)
+          : true
+      )
+      .filter((log) => log.value.includes(filter.value))
+      .slice(1, page.value * LOGS_PER_PAGE);
   }
-  return logs.value
-    .filter((log) =>
-      filters.value.selectedPods.length
-        ? filters.value.selectedPods.includes(log.podId)
-        : true
-    )
-    .filter((log) => log.value.includes(filter.value))
-    .slice(1, page.value * LOGS_PER_PAGE);
+
+  return filter.value.length > 0
+    ? filteredLogs.map((log) => ({
+        ...log,
+        value: log.value.replace(
+          filter.value,
+          `<span class="p-0 m-0 bg-indigo-600 text-white">${filter.value}</span>`
+        ),
+      }))
+    : filteredLogs;
 });
 
 onMounted(async () => {
